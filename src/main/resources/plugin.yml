@@ -1,0 +1,8 @@
+name: WarpCommand
+version: '0.1.0'
+main: moe.pxe.warpCommand.Main
+api-version: '1.21'
+prefix: WarpCommand
+authors: [ pixiboot ]
+description: Adds a /warp command to teleport to admin-set locations on the map.
+website: pxe.moe
