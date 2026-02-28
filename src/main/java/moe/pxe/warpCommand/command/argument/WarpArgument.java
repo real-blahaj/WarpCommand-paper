@@ -32,7 +32,7 @@ public class WarpArgument implements CustomArgumentType.Converted<Warp, String> 
 
     @Override
     public Warp convert(String nativeType) throws CommandSyntaxException {
-        final Warp warp = Warps.getWarp(nativeType);
+        final Warp warp = Warps.getWarp(nativeType.toLowerCase(Locale.ROOT));
         if (warp == null) throw ERROR_NOT_FOUND.create(nativeType);
         return warp;
     }

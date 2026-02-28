@@ -16,6 +16,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
+import java.util.Locale;
+
 public class SetWarpCommand {
 
     private static final MiniMessage MINIMESSAGE = MiniMessage.miniMessage();
@@ -126,7 +128,7 @@ public class SetWarpCommand {
                                 return 0;
                             }
 
-                            Warp warp = Warps.newWarp(name, ctx.getSource().getLocation());
+                            Warp warp = Warps.newWarp(name.toLowerCase(Locale.ROOT), ctx.getSource().getLocation());
                             saveConfig.run();
                             ctx.getSource().getSender().sendRichMessage("Created new warp <warp>", Placeholder.component("warp", warp.getComponent()));
                             return Command.SINGLE_SUCCESS;
