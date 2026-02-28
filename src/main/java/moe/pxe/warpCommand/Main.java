@@ -40,12 +40,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Warps.flushToConfig(warpsConfig);
-        try {
-            warpsConfig.save(warpsConfigFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        saveWarpConfig();
     }
 
     public static Main getInstance() {
@@ -64,6 +59,15 @@ public final class Main extends JavaPlugin {
             e.printStackTrace();
         }
         Warps.loadFromConfig(warpsConfig);
+    }
+
+    public void saveWarpConfig() {
+        Warps.flushToConfig(warpsConfig);
+        try {
+            warpsConfig.save(warpsConfigFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createWarpsConfig() {

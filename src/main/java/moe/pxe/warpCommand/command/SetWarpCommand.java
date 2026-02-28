@@ -8,6 +8,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.FinePositionResolver;
 import io.papermc.paper.math.FinePosition;
+import moe.pxe.warpCommand.Main;
 import moe.pxe.warpCommand.Warp;
 import moe.pxe.warpCommand.Warps;
 import moe.pxe.warpCommand.command.argument.WarpArgument;
@@ -20,8 +21,7 @@ public class SetWarpCommand {
     private static final MiniMessage MINIMESSAGE = MiniMessage.miniMessage();
 
     public static LiteralCommandNode<CommandSourceStack> getCommand() {
-
-
+        Runnable saveConfig = Main.getInstance()::saveWarpConfig;
         return Commands.literal("setwarp")
                 .requires(ctx -> ctx.getSender().hasPermission("warps.set") || ctx.getSender().isOp())
                 .then(Commands.argument("warp", new WarpArgument())
@@ -31,16 +31,18 @@ public class SetWarpCommand {
                                         .executes(ctx -> {
                                             Warp warp = ctx.getArgument("warp", Warp.class);
                                             Component name = MINIMESSAGE.deserialize(ctx.getArgument("name", String.class));
-                                            warp.setDisplayName(name);
-                                            ctx.getSource().getSender().sendRichMessage("Set display name of warp to <name>", Placeholder.component("name", name));
 
+                                            warp.setDisplayName(name);
+                                            saveConfig.run();
+                                            ctx.getSource().getSender().sendRichMessage("Set display name of warp to <name>", Placeholder.component("name", name));
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
                                     Warp warp = ctx.getArgument("warp", Warp.class);
-                                    warp.setDisplayName(null);
-                                    ctx.getSource().getSender().sendRichMessage("Removed display name from <warp>", Placeholder.component("warp", warp.getComponent()));
 
+                                    warp.setDisplayName(null);
+                                    saveConfig.run();
+                                    ctx.getSource().getSender().sendRichMessage("Removed display name from <warp>", Placeholder.component("warp", warp.getComponent()));
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(Commands.literal("description")
@@ -49,16 +51,18 @@ public class SetWarpCommand {
                                         .executes(ctx -> {
                                             Warp warp = ctx.getArgument("warp", Warp.class);
                                             Component description = MINIMESSAGE.deserialize(ctx.getArgument("description", String.class));
-                                            warp.setDescription(description);
-                                            ctx.getSource().getSender().sendRichMessage("Set description of warp to <description>", Placeholder.component("description", description));
 
+                                            warp.setDescription(description);
+                                            saveConfig.run();
+                                            ctx.getSource().getSender().sendRichMessage("Set description of warp to <description>", Placeholder.component("description", description));
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
                                     Warp warp = ctx.getArgument("warp", Warp.class);
-                                    warp.setDescription(null);
-                                    ctx.getSource().getSender().sendRichMessage("Removed description from <warp>", Placeholder.component("warp", warp.getComponent()));
 
+                                    warp.setDescription(null);
+                                    saveConfig.run();
+                                    ctx.getSource().getSender().sendRichMessage("Removed description from <warp>", Placeholder.component("warp", warp.getComponent()));
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(Commands.literal("permission")
@@ -69,15 +73,17 @@ public class SetWarpCommand {
                                             String permission = ctx.getArgument("permission", String.class);
 
                                             warp.setPermission(permission);
+                                            saveConfig.run();
                                             ctx.getSource().getSender().sendRichMessage("Set required permission for warp to <permission>",
                                                     Placeholder.unparsed("permission", permission));
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
                                     Warp warp = ctx.getArgument("warp", Warp.class);
-                                    warp.setPermission(null);
-                                    ctx.getSource().getSender().sendRichMessage("Removed required permission from <warp>", Placeholder.component("warp", warp.getComponent()));
 
+                                    warp.setPermission(null);
+                                    saveConfig.run();
+                                    ctx.getSource().getSender().sendRichMessage("Removed required permission from <warp>", Placeholder.component("warp", warp.getComponent()));
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(Commands.literal("location")
@@ -89,26 +95,27 @@ public class SetWarpCommand {
                                             final FinePosition finePosition = resolver.resolve(ctx.getSource());
 
                                             warp.setLocation(finePosition.toLocation(ctx.getSource().getLocation().getWorld()));
+                                            saveConfig.run();
                                             ctx.getSource().getSender().sendRichMessage("Set location of <warp> to <location>",
                                                     Placeholder.component("warp", warp.getComponent()),
                                                     Placeholder.unparsed("location", warp.getLocation().x()+" "+warp.getLocation().y()+" "+warp.getLocation().z())
                                             );
-
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
                                     Warp warp = ctx.getArgument("warp", Warp.class);
 
                                     warp.setLocation(ctx.getSource().getLocation());
+                                    saveConfig.run();
                                     ctx.getSource().getSender().sendRichMessage("Set location of <warp> to your location", Placeholder.component("warp", warp.getComponent()));
-
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .executes(ctx -> {
                             Warp warp = ctx.getArgument("warp", Warp.class);
-                            warp.setLocation(ctx.getSource().getLocation());
-                            ctx.getSource().getSender().sendRichMessage("Set location of <warp> to your location", Placeholder.component("warp", warp.getComponent()));
 
+                            warp.setLocation(ctx.getSource().getLocation());
+                            saveConfig.run();
+                            ctx.getSource().getSender().sendRichMessage("Set location of <warp> to your location", Placeholder.component("warp", warp.getComponent()));
                             return Command.SINGLE_SUCCESS;
                         }))
                 .then(Commands.argument("name", StringArgumentType.word())
@@ -118,9 +125,10 @@ public class SetWarpCommand {
                                 ctx.getSource().getSender().sendRichMessage("<red>No permission to edit warp <name>", Placeholder.unparsed("name", name));
                                 return 0;
                             }
-                            Warp warp = Warps.newWarp(name, ctx.getSource().getLocation());
-                            ctx.getSource().getSender().sendRichMessage("Created new warp <warp>", Placeholder.component("warp", warp.getComponent()));
 
+                            Warp warp = Warps.newWarp(name, ctx.getSource().getLocation());
+                            saveConfig.run();
+                            ctx.getSource().getSender().sendRichMessage("Created new warp <warp>", Placeholder.component("warp", warp.getComponent()));
                             return Command.SINGLE_SUCCESS;
                         })
                 )
