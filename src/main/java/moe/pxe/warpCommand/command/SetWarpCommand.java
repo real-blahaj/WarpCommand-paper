@@ -37,6 +37,7 @@ public class SetWarpCommand {
                                             warp.setDisplayName(name);
                                             saveConfig.run();
                                             ctx.getSource().getSender().sendRichMessage("Set display name of warp to <name>", Placeholder.component("name", name));
+                                            ctx.getSource().getSender().playSound(Main.MODIFY_SOUND);
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
@@ -45,6 +46,7 @@ public class SetWarpCommand {
                                     warp.setDisplayName(null);
                                     saveConfig.run();
                                     ctx.getSource().getSender().sendRichMessage("Removed display name from <warp>", Placeholder.component("warp", warp.getComponent()));
+                                    ctx.getSource().getSender().playSound(Main.REMOVE_SOUND);
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(Commands.literal("description")
@@ -57,6 +59,7 @@ public class SetWarpCommand {
                                             warp.setDescription(description);
                                             saveConfig.run();
                                             ctx.getSource().getSender().sendRichMessage("Set description of warp to <description>", Placeholder.component("description", description));
+                                            ctx.getSource().getSender().playSound(Main.MODIFY_SOUND);
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
@@ -65,6 +68,7 @@ public class SetWarpCommand {
                                     warp.setDescription(null);
                                     saveConfig.run();
                                     ctx.getSource().getSender().sendRichMessage("Removed description from <warp>", Placeholder.component("warp", warp.getComponent()));
+                                    ctx.getSource().getSender().playSound(Main.REMOVE_SOUND);
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(Commands.literal("permission")
@@ -78,6 +82,7 @@ public class SetWarpCommand {
                                             saveConfig.run();
                                             ctx.getSource().getSender().sendRichMessage("Set required permission for warp to <permission>",
                                                     Placeholder.unparsed("permission", permission));
+                                            ctx.getSource().getSender().playSound(Main.MODIFY_SOUND);
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
@@ -86,6 +91,7 @@ public class SetWarpCommand {
                                     warp.setPermission(null);
                                     saveConfig.run();
                                     ctx.getSource().getSender().sendRichMessage("Removed required permission from <warp>", Placeholder.component("warp", warp.getComponent()));
+                                    ctx.getSource().getSender().playSound(Main.REMOVE_SOUND);
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(Commands.literal("location")
@@ -102,6 +108,7 @@ public class SetWarpCommand {
                                                     Placeholder.component("warp", warp.getComponent()),
                                                     Placeholder.unparsed("location", warp.getLocation().x()+" "+warp.getLocation().y()+" "+warp.getLocation().z())
                                             );
+                                            ctx.getSource().getSender().playSound(Main.MODIFY_SOUND);
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
@@ -110,6 +117,7 @@ public class SetWarpCommand {
                                     warp.setLocation(ctx.getSource().getLocation());
                                     saveConfig.run();
                                     ctx.getSource().getSender().sendRichMessage("Set location of <warp> to your location", Placeholder.component("warp", warp.getComponent()));
+                                    ctx.getSource().getSender().playSound(Main.MODIFY_SOUND);
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .executes(ctx -> {
@@ -118,6 +126,7 @@ public class SetWarpCommand {
                             warp.setLocation(ctx.getSource().getLocation());
                             saveConfig.run();
                             ctx.getSource().getSender().sendRichMessage("Set location of <warp> to your location", Placeholder.component("warp", warp.getComponent()));
+                            ctx.getSource().getSender().playSound(Main.MODIFY_SOUND);
                             return Command.SINGLE_SUCCESS;
                         }))
                 .then(Commands.argument("name", StringArgumentType.word())
@@ -131,6 +140,7 @@ public class SetWarpCommand {
                             Warp warp = Warps.newWarp(name.toLowerCase(Locale.ROOT), ctx.getSource().getLocation());
                             saveConfig.run();
                             ctx.getSource().getSender().sendRichMessage("Created new warp <warp>", Placeholder.component("warp", warp.getComponent()));
+                            ctx.getSource().getSender().playSound(Main.MODIFY_SOUND);
                             return Command.SINGLE_SUCCESS;
                         })
                 )

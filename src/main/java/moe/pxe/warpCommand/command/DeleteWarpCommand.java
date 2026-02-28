@@ -23,6 +23,7 @@ public class DeleteWarpCommand {
                             Warps.deleteWarp(warp.getName());
                             saveConfig.run();
                             ctx.getSource().getSender().sendRichMessage("Deleted warp <name>", Placeholder.unparsed("name", warp.getName()));
+                            ctx.getSource().getSender().playSound(Main.DELETE_SOUND);
                             return Command.SINGLE_SUCCESS;
                         }))
                 .build();

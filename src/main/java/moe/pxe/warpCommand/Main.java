@@ -20,6 +20,9 @@ public final class Main extends JavaPlugin {
 
     public static final Sound TELEPORT_SOUND = Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 1f, 1f);
     public static final Sound VIEW_WARPS_SOUND = Sound.sound(Key.key("block.chiseled_bookshelf.pickup.enchanted"), Sound.Source.MASTER, 1f, 1f);
+    public static final Sound MODIFY_SOUND = Sound.sound(Key.key("entity.item_frame.place"), Sound.Source.MASTER, 0.75f, 1.25f);
+    public static final Sound REMOVE_SOUND = Sound.sound(Key.key("entity.item_frame.remove_item"), Sound.Source.MASTER, 0.75f, 0.793701f);
+    public static final Sound DELETE_SOUND = Sound.sound(Key.key("block.fire.extinguish"), Sound.Source.MASTER, 0.75f, 2f);
 
     private FileConfiguration warpsConfig;
     private final File warpsConfigFile = new File(getDataFolder(), "warps.yml");
