@@ -14,11 +14,13 @@ import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
 import moe.pxe.warpCommand.Warp;
 import moe.pxe.warpCommand.Warps;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class WarpArgument implements CustomArgumentType.Converted<Warp, String> {
 
@@ -37,13 +39,11 @@ public class WarpArgument implements CustomArgumentType.Converted<Warp, String> 
 
     @Override
     public <S> Warp convert(String nativeType, S source) throws CommandSyntaxException {
-        if (!(source instanceof CommandSourceStack stack)) {
-            throw ERROR_BAD_SOURCE.create();
-        }
-        if (!stack.getSender().hasPermission("warps.warp."+nativeType) && !stack.getSender().hasPermission("warps.warp") && !stack.getSender().isOp()) {
-            throw ERROR_NOT_FOUND.create(nativeType);
-        }
-        return convert(nativeType);
+        if (!(source instanceof CommandSourceStack stack)) throw ERROR_BAD_SOURCE.create();
+        Warp warp = convert(nativeType);
+        if (!(stack.getSender() instanceof final Player player)) return warp;
+        if (!warp.hasPermission(player)) throw ERROR_NOT_FOUND.create(nativeType);
+        return warp;
     }
 
     @Override
@@ -53,10 +53,14 @@ public class WarpArgument implements CustomArgumentType.Converted<Warp, String> 
 
     @Override
     public <S> @NonNull CompletableFuture<Suggestions> listSuggestions(@NonNull CommandContext<S> context, @NonNull SuggestionsBuilder builder) {
-        Arrays.stream(Warps.getAllWarps())
-                .map(Warp::getName)
+        Stream<Warp> stream = Arrays.stream(Warps.getAllWarps());
+        if (context.getSource() instanceof final CommandSourceStack stack) {
+            stream = stream.filter(warp -> warp.hasPermission(stack.getSender()));
+        }
+        stream.map(Warp::getName)
                 .filter(name -> name.toLowerCase(Locale.ROOT).startsWith(builder.getRemainingLowerCase()))
                 .forEach(builder::suggest);
+
         return builder.buildFuture();
     }
 }

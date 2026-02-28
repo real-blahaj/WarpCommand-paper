@@ -15,6 +15,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class ListWarpsCommand {
@@ -30,8 +31,19 @@ public class ListWarpsCommand {
         Collection<Component> bookPages = new ArrayList<>();
         int idx = -1;
         Component currentPage = Component.empty();
-        Warp[] warps = Warps.getAllWarps();
-        for (Warp warp : warps) {
+        Warp[] warps = Arrays.stream(Warps.getAllWarps())
+                .filter(warp -> warp.hasPermission(ctx.getSource().getSender()))
+                .toArray(Warp[]::new);
+        if (warps.length == 0) {
+            currentPage = MINIMESSAGE.deserialize("""
+                    <dark_aqua>Warps</dark_aqua>
+                    
+                    <dark_gray>No warps found!</dark_gray>
+                    <gray><i>Either no warps have been created or you don't have permission to teleport to any of them.""");
+            if (ctx.getSource().getSender().hasPermission("warps.set") || ctx.getSource().getSender().isOp())
+                currentPage = currentPage.append(MINIMESSAGE.deserialize("\n\n<click:copy_to_clipboard:'/setwarp '><dark_aqua>Why not create a new warp?</dark_aqua></click>"));
+        }
+        else for (Warp warp : warps) {
             idx++;
             if (idx % 12 == 0) {
                 if (idx > 0) bookPages.add(currentPage);
@@ -48,6 +60,7 @@ public class ListWarpsCommand {
 
     public static LiteralCommandNode<CommandSourceStack> getCommand() {
         return Commands.literal("warps")
+                .requires(ctx -> ctx.getSender().hasPermission("warps.warp") || ctx.getSender().isOp())
                 .then(Commands.literal("reload")
                         .requires(ctx -> ctx.getSender().hasPermission("warps.reload") || ctx.getSender().isOp())
                         .executes(ctx -> {

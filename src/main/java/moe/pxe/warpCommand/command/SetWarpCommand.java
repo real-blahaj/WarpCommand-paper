@@ -67,12 +67,17 @@ public class SetWarpCommand {
                                         .executes(ctx -> {
                                             Warp warp = ctx.getArgument("warp", Warp.class);
                                             String permission = ctx.getArgument("permission", String.class);
+
                                             warp.setPermission(permission);
+                                            ctx.getSource().getSender().sendRichMessage("Set required permission for warp to <permission>",
+                                                    Placeholder.unparsed("permission", permission));
                                             return Command.SINGLE_SUCCESS;
                                         }))
                                 .executes(ctx -> {
                                     Warp warp = ctx.getArgument("warp", Warp.class);
                                     warp.setPermission(null);
+                                    ctx.getSource().getSender().sendRichMessage("Removed required permission from <warp>", Placeholder.component("warp", warp.getComponent()));
+
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .then(Commands.literal("location")
@@ -100,7 +105,6 @@ public class SetWarpCommand {
                                     return Command.SINGLE_SUCCESS;
                                 }))
                         .executes(ctx -> {
-
                             Warp warp = ctx.getArgument("warp", Warp.class);
                             warp.setLocation(ctx.getSource().getLocation());
                             ctx.getSource().getSender().sendRichMessage("Set location of <warp> to your location", Placeholder.component("warp", warp.getComponent()));
@@ -109,7 +113,12 @@ public class SetWarpCommand {
                         }))
                 .then(Commands.argument("name", StringArgumentType.word())
                         .executes(ctx -> {
-                            Warp warp = Warps.newWarp(ctx.getArgument("name", String.class), ctx.getSource().getLocation());
+                            String name = ctx.getArgument("name", String.class);
+                            if (Warps.getWarp(name) != null) {
+                                ctx.getSource().getSender().sendRichMessage("<red>No permission to edit warp <name>", Placeholder.unparsed("name", name));
+                                return 0;
+                            }
+                            Warp warp = Warps.newWarp(name, ctx.getSource().getLocation());
                             ctx.getSource().getSender().sendRichMessage("Created new warp <warp>", Placeholder.component("warp", warp.getComponent()));
 
                             return Command.SINGLE_SUCCESS;

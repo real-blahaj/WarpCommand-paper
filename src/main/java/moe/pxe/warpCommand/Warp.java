@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Warp {
@@ -66,6 +67,10 @@ public class Warp {
         hover = hover.append(Component.text("\nClick to teleport →").color(NamedTextColor.DARK_GRAY));
 
         return (displayName != null ? displayName : Component.text(name)).hoverEvent(hover).clickEvent(ClickEvent.runCommand("/warp "+name));
+    }
+
+    public boolean hasPermission(CommandSender player) {
+        return permission == null || player.isOp() || player.hasPermission(permission);
     }
 
     public void teleportPlayer(Player player) { teleportPlayer(player, false); }

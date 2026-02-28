@@ -42,6 +42,11 @@ public class Warps {
     }
 
     public static void flushToConfig(FileConfiguration config) {
+        try {
+            config.loadFromString("");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         for (Map.Entry<String, Warp> warp : WARPS.entrySet()) {
             config.setRichMessage(warp.getKey()+".display-name", warp.getValue().getDisplayName());
             config.setRichMessage(warp.getKey()+".description", warp.getValue().getDescription());
