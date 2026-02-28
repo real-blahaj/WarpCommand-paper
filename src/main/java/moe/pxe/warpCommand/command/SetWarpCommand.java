@@ -30,6 +30,11 @@ public class SetWarpCommand {
                         .then(Commands.literal("displayname")
                                 .requires(ctx -> ctx.getSender().hasPermission("warps.set.displayname") || ctx.getSender().isOp())
                                 .then(Commands.argument("name", StringArgumentType.greedyString())
+                                        .suggests((ctx, builder) -> {
+                                            Component displayName = ctx.getArgument("warp", Warp.class).getDisplayName();
+                                            if (displayName != null) builder.suggest(MINIMESSAGE.serialize(displayName));
+                                            return builder.buildFuture();
+                                        })
                                         .executes(ctx -> {
                                             Warp warp = ctx.getArgument("warp", Warp.class);
                                             Component name = MINIMESSAGE.deserialize(ctx.getArgument("name", String.class));
@@ -52,6 +57,11 @@ public class SetWarpCommand {
                         .then(Commands.literal("description")
                                 .requires(ctx -> ctx.getSender().hasPermission("warps.set.description") || ctx.getSender().isOp())
                                 .then(Commands.argument("description", StringArgumentType.greedyString())
+                                        .suggests((ctx, builder) -> {
+                                            Component description = ctx.getArgument("warp", Warp.class).getDescription();
+                                            if (description != null) builder.suggest(MINIMESSAGE.serialize(description));
+                                            return builder.buildFuture();
+                                        })
                                         .executes(ctx -> {
                                             Warp warp = ctx.getArgument("warp", Warp.class);
                                             Component description = MINIMESSAGE.deserialize(ctx.getArgument("description", String.class));
@@ -74,6 +84,11 @@ public class SetWarpCommand {
                         .then(Commands.literal("permission")
                                 .requires(ctx -> ctx.getSender().hasPermission("warps.set.permission") || ctx.getSender().isOp())
                                 .then(Commands.argument("permission", StringArgumentType.greedyString())
+                                        .suggests((ctx, builder) -> {
+                                            String permission = ctx.getArgument("warp", Warp.class).getPermission();
+                                            if (permission != null) builder.suggest(permission);
+                                            return builder.buildFuture();
+                                        })
                                         .executes(ctx -> {
                                             Warp warp = ctx.getArgument("warp", Warp.class);
                                             String permission = ctx.getArgument("permission", String.class);
@@ -130,6 +145,7 @@ public class SetWarpCommand {
                             return Command.SINGLE_SUCCESS;
                         }))
                 .then(Commands.argument("name", StringArgumentType.word())
+                        .requires(ctx -> ctx.getSender().hasPermission("warp.create") || ctx.getSender().isOp())
                         .executes(ctx -> {
                             String name = ctx.getArgument("name", String.class);
                             if (Warps.getWarp(name) != null) {
