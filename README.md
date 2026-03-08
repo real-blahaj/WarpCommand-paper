@@ -1,4 +1,4 @@
-# pxewarps
+# pxewarp
 
 a slightly customizable warp plugin
 
