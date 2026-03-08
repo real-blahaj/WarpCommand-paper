@@ -8,7 +8,7 @@ a slightly customizable warp plugin
 
 - warp to positions set by admins using `/warp <warp>`
 - list all warps (you have permission to teleport to) with `/warps`
-- 
+
 ### for admins
 
 - set warps using `/setwarp <name>`
